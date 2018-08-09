@@ -6,16 +6,27 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
-    <script src="../../webcomponentsjs/webcomponents-lite.js"></script>
-    <link rel="import" href="../../polymer/polymer.html">
-    <link rel="import" href="../../iron-flex-layout/iron-flex-layout-classes.html">
-    <link rel="import" href="../../paper-card/paper-card.html">
-    <link rel="import" href="../../paper-styles/demo-pages.html">
-    <link rel="import" href="../../paper-input/paper-input.html">
+    <script src="../../@webcomponents/webcomponentsjs/webcomponents-bundle.js"></script>
+    <script type="module" src="../../@polymer/polymer/polymer-legacy.js"></script>
+    <script type="module" src="../../@polymer/iron-flex-layout/iron-flex-layout-classes.js"></script>
+    <script type="module" src="../../@polymer/paper-card/paper-card.js"></script>
+    <script type="module" src="../../@polymer/paper-styles/demo-pages.js"></script>
+    <script type="module" src="../../@polymer/paper-input/paper-input.js"></script>
 
-    <link rel="import" href="../flag-icon.html">
+    <script type="module" src="../flag-icon.js"></script>
 
-    <custom-style>
+    <!-- FIXME(polymer-modulizer):
+        These imperative modules that innerHTML your HTML are
+        a hacky way to be sure that any mixins in included style
+        modules are ready before any elements that reference them are
+        instantiated, otherwise the CSS @apply mixin polyfill won't be
+        able to expand the underlying CSS custom properties.
+        See: https://github.com/Polymer/polymer-modulizer/issues/154
+        -->
+    <script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<custom-style>
         <style is="custom-style" include="iron-flex">
             /* When no size is specified for flag-icon it won't display */
 
@@ -37,12 +48,18 @@
                 background-color: #dddddd;
             }
         </style>
-    </custom-style>
+    </custom-style>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
 </head>
 
 <body unresolved>
 
-<dom-bind id="app">
+<script type="module">
+const $_documentContainer = document.createElement('template');
+
+$_documentContainer.innerHTML = `<dom-bind id="app">
     <template id="t">
         <paper-card heading="Flag Icon Search Demo">
             <div class="card-content">
@@ -55,17 +72,26 @@
             </div>
         </paper-card>
     </template>
-</dom-bind>
-<script>
-    var t = document.querySelector('#t');
-    var flag = document.querySelector('#flagIcon');
-    var searchBox = document.querySelector('#searchBox');
-    var output = document.querySelector('#output');
-    var searchFunction = function () {
-        output.innerText = JSON.stringify(flag.findCountry(searchBox.value));
-    };
-    searchBox.addEventListener('change', searchFunction);
-    searchBox.addEventListener('keyup', searchFunction);
+</dom-bind>`;
+
+document.body.appendChild($_documentContainer.content);
+</script>
+<script type="module">
+import '@polymer/polymer/polymer-legacy.js';
+import '@polymer/iron-flex-layout/iron-flex-layout-classes.js';
+import '@polymer/paper-card/paper-card.js';
+import '@polymer/paper-styles/demo-pages.js';
+import '@polymer/paper-input/paper-input.js';
+import '../flag-icon.js';
+var t = document.querySelector('#t');
+var flag = document.querySelector('#flagIcon');
+var searchBox = document.querySelector('#searchBox');
+var output = document.querySelector('#output');
+var searchFunction = function () {
+    output.innerText = JSON.stringify(flag.findCountry(searchBox.value));
+};
+searchBox.addEventListener('change', searchFunction);
+searchBox.addEventListener('keyup', searchFunction);
 </script>
 
 </body>

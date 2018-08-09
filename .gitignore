@@ -2,3 +2,4 @@ bower_components
 .directory
 /.project
 .idea
+node_modules
